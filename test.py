@@ -96,8 +96,8 @@ class Layout:
     def zeros(cls):
         return cls(np.zeros((25, 25)))
 
-    def shifted(self, y, x):
-        r = np.roll(self.current, (y, x), (0, 1))
+    def _shifted(self, m, y, x):
+        r = np.roll(m, (y, x), (0, 1))
 
         if y < 0:
             r[y:] = 0
@@ -110,6 +110,9 @@ class Layout:
             r[:,0:x] = 0
 
         return r
+
+    def shifted(self, y, x):
+        return self._shifted(self.current, y, x)
 
     def nextgen(self):
         ages = np.zeros((8, 25, 25))
