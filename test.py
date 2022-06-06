@@ -189,7 +189,7 @@ def optimize(layout):
             if not new_layout.run():
                 continue
             if new_layout.score > layout.score:
-                print(f'optimize: mana=[{layout.mana} => {new_layout.mana}] cost=[{layout.cost()} => {new_layout.cost()}]')
+                # print(f'optimize: mana=[{layout.mana} => {new_layout.mana}] cost=[{layout.cost()} => {new_layout.cost()}]')
                 layout = new_layout
                 improved = True
                 break
