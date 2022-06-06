@@ -211,32 +211,40 @@ def main():
     if args.init:
         layout = Layout.from_hex(args.init)
 
-    # 18000
-    # layout = Layout.from_hex('00000020000014000000000002000000000000080001000000ae000001000010400000000000000001000000001001400000800600000a000002000000000000400000200000240000020000000000')
-
     layout.run()
     print(layout.graph_both())
     print(f'gen0: {layout.summary()}')
 
-    for i in range(10):
-        children = []
-        for j in range(500):
-            c = layout.evolve()
-            c.run()
-            children.append(c)
+    try:
+        i = 1
+        while True:
+            while True:
+                new_layout = layout.evolve()
+                new_layout.run()
+                if new_layout.score > layout.score:
+                    break
+            new_layout = optimize(new_layout)
+            print(f'gen{i}: {new_layout.summary()}')
+            print(new_layout.to_hex())
+            layout = new_layout
+            i += 1
+    except KeyboardInterrupt:
+        print('\r', end='')
+        pass
 
-        best = sorted(children, key=lambda c: c.score)[-1]
-        if best.score > layout.score:
-            best = optimize(best)
-            print(f'gen{i+1}: {best.summary()}')
-            print(f'{best.to_hex()}')
-            layout = best
-        else:
-            print(f'gen{i+1}: *skip*')
+    if layout.mana == 18000:
+        mirrored = np.rot90(layout.init_layout, 2)
+        layout2 = Layout(layout.init_layout + mirrored)
+        layout2.run()
+        print(layout2.graph_both())
+        print(layout2.summary())
+        if layout2.score > layout.score:
+            layout = layout2
 
     layout.run()
     print(layout.graph_both())
     print(layout.summary())
+    print(layout.to_hex())
 
 if __name__ == '__main__':
     main()
