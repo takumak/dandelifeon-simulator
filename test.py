@@ -169,10 +169,12 @@ class Layout:
                 self.mana = np.sum(absorbed * 60) - (np.count_nonzero(absorbed) * 60)
                 self.score = self.mana - (self.cost() * 10)
                 self.cycle = g
-                return True
+                break
 
             self.nextgen()
             g += 1
+
+        return True
 
     def summary(self):
         return f'score={self.score} mana={self.mana} cycle={self.cycle} cost={self.cost()}'
