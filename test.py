@@ -214,7 +214,7 @@ def main():
         layout = Layout.from_hex(args.init)
 
     layout.run()
-    print(layout.graph_both())
+    # print(layout.graph_both())
     print(f'gen0: {layout.summary()}')
 
     try:
