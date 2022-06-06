@@ -55,10 +55,12 @@ class Layout:
         r = [hr]
         for y in range(25):
             c = 'o' if y in range(11, 14) else '*'
-            line = ['*' if i else ' ' for i in layout[y,:11]]
-            line += [c if i else ' ' for i in layout[y,11:14]]
-            line += ['*' if i else ' ' for i in layout[y,14:]]
-            line = ''.join(line)
+            line = ''
+            for x in range(25):
+                m = c if x in range(11, 14) else '*'
+                if not layout[y, x]:
+                    m = ' '
+                line += m
             r.append(f'|{line}|')
         r.append(hr)
         return '\n'.join(r)
