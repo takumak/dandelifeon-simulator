@@ -246,8 +246,13 @@ def main():
                 if new_layout.score > layout.score:
                     new_layout = optimize(new_layout)
                     cand.append(new_layout)
-                if len(cand) >= 100:
-                    break
+
+                if layout.cost() == 0:
+                    if len(cand) >= 1000:
+                        break
+                else:
+                    if len(cand) >= 10:
+                        break
             new_layout = sorted(cand, key=lambda l: l.score)[-1]
             print(f'gen{i}: {new_layout.summary()}')
             print(new_layout.to_hex())
