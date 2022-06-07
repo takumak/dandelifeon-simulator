@@ -76,6 +76,9 @@ class Layout:
                 m = c if x in range(11, 14) else '*'
                 if not layout[y, x]:
                     m = ' '
+                if y % 5 == 4 or x % 5 == 4:
+                    # grid
+                    m = f"\x1b[100m{m}\x1b[0m"
                 line += m
             r.append(f'|{line}|')
         r.append(hr)
