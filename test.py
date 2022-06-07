@@ -3,16 +3,17 @@ import random
 import functools
 import argparse
 
-killzone = set([
+centerzone = set([
     286, 287, 288,
     311, 312, 313,
     336, 337, 338,
 ])
 
-evolvezone = list(set(range(25*25)) - killzone)
+evolvezone = list(set(range(25*25)) - centerzone)
 
 class Layout:
-    K = 20
+    S = 4
+    K = 6
 
     def __init__(self, init_layout):
         self.init_layout = init_layout
@@ -23,7 +24,22 @@ class Layout:
 
     def evolve(self):
         newlayout = self.init_layout.copy()
-        for i in random.sample(evolvezone, self.K):
+
+        r = list(range(25 - self.S))
+        cand = list(set(sum([[(y * 25 + x) for x in r] for y in r], [])) - centerzone)
+
+        while True:
+            lefttop = random.choice(cand)
+            area = []
+            for y in range(self.S):
+                for x in range(self.S):
+                    i = (lefttop//25 + y) * 25 + (lefttop%25 + x)
+                    area.append(i)
+            area = set(area) - centerzone
+            if len(area) == self.S * self.S:
+                break
+
+        for i in random.sample(list(area), self.K):
             y = i // 25
             x = i % 25
             newlayout[y,x] = 0 if self.init_layout[y,x] else 1
@@ -201,9 +217,12 @@ def optimize(layout):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-k', metavar='K', type=int, default=20)
+    parser.add_argument('-s', metavar='S', type=int, default=4)
+    parser.add_argument('-k', metavar='K', type=int, default=6)
     parser.add_argument('--init', metavar='INIT_LAYOUT')
     args = parser.parse_args()
+
+    Layout.S = args.s
     Layout.K = args.k
 
     random.seed()
@@ -220,12 +239,16 @@ def main():
     try:
         i = 1
         while True:
+            cand = []
             while True:
                 new_layout = layout.evolve()
                 new_layout.run()
                 if new_layout.score > layout.score:
+                    new_layout = optimize(new_layout)
+                    cand.append(new_layout)
+                if len(cand) >= 100:
                     break
-            new_layout = optimize(new_layout)
+            new_layout = sorted(cand, key=lambda l: l.score)[-1]
             print(f'gen{i}: {new_layout.summary()}')
             print(new_layout.to_hex())
             layout = new_layout
