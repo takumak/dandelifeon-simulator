@@ -259,8 +259,8 @@ def main():
     if args.init:
         init_layout = Layout.from_hex(args.init)
         init_layout.run()
-        print(finit_layout.summary())
-        print(new_layout.to_hex())
+        print(init_layout.summary())
+        print(init_layout.to_hex())
 
     best = init_layout
     try:
