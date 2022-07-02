@@ -68,18 +68,33 @@ class Layout:
         return self._to_bytes(self.current)
 
     def _graph(self, layout):
-        hr = '+' + ('-' * 25) + '+'
+        hr = '+' + ('-' * 50) + '+'
         r = [hr]
         for y in range(25):
-            c = 'o' if y in range(11, 14) else '*'
+            c = '⭐' if y in range(11, 14) else '🦠'
             line = ''
             for x in range(25):
-                m = c if x in range(11, 14) else '*'
+                m = c if x in range(11, 14) else '🦠'
                 if not layout[y, x]:
-                    m = ' '
-                if y % 5 == 4 or x % 5 == 4:
-                    # grid
-                    m = f"\x1b[100m{m}\x1b[0m"
+                    m = '  '
+                # if y % 5 == 4 or x % 5 == 4:
+                #     # grid
+                #     m = f"\x1b[100m{m}\x1b[0m"
+                # elif (x + y) % 2:
+                #     m = f"\x1b[100m{m}\x1b[0m"
+
+                # bg color
+                if ((y // 5) + (x // 5)) % 2:
+                    if (y + x) % 2:
+                        m = f"\x1b[48:5:52m{m}\x1b[0m"
+                    else:
+                        m = f"\x1b[48:5:88m{m}\x1b[0m"
+                else:
+                    if (y + x) % 2:
+                        m = f"\x1b[48:5:17m{m}\x1b[0m"
+                    else:
+                        m = f"\x1b[48:5:18m{m}\x1b[0m"
+
                 line += m
             r.append(f'|{line}|')
         r.append(hr)
